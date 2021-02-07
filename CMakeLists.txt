@@ -34,10 +34,6 @@ find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 configure_file(
-    src/plugin-macros.h.in
-    ../src/plugin-macros.generated.h
-)
-configure_file(
     installer/installer-macOS.pkgproj.in
     ../installer/installer-macOS.generated.pkgproj
 )
@@ -56,10 +52,10 @@ configure_file(
 )
 
 set(PLUGIN_SOURCES
-	src/plugin-main.c)
+	src/main.cc)
 
 set(PLUGIN_HEADERS
-	src/plugin-macros.generated.h)
+	src/plugin_info.hh)
 
 # --- Platform-independent build settings ---
 add_library(${CMAKE_PROJECT_NAME} MODULE ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})
