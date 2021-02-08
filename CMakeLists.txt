@@ -34,15 +34,6 @@ find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 configure_file(
-    installer/installer-macOS.pkgproj.in
-    ../installer/installer-macOS.generated.pkgproj
-)
-configure_file(
-    installer/installer-Windows.iss.in
-    ../installer/installer-Windows.generated.iss
-)
-
-configure_file(
     ci/ci_includes.sh.in
     ../ci/ci_includes.generated.sh
 )
