@@ -33,15 +33,6 @@ endif()
 find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
-configure_file(
-    ci/ci_includes.sh.in
-    ../ci/ci_includes.generated.sh
-)
-configure_file(
-    ci/ci_includes.cmd.in
-    ../ci/ci_includes.generated.cmd
-)
-
 set(PLUGIN_SOURCES
 	src/main.cc)
 
