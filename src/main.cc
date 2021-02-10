@@ -16,7 +16,7 @@
 
 #include <obs/obs-module.h>
 
-#include "plugin_info.hh"
+#include "pinfo.hh"
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
