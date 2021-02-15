@@ -14,16 +14,29 @@
  *    - Iker Galardi
  */
 
+#include <exception>
+
 #include <obs/obs-module.h>
 
 #include "pinfo.hh"
+#include "effect.hh"
 
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
+
+
 bool obs_module_load()
 {
+    try {
+        register_effect();
+    } catch (const std::exception& e) {
+        blog(LOG_ERROR, "[DICK] error loading the effect: %s", e.what());
+        return false;
+    }
+
     blog(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
+
     return true;
 }
 
