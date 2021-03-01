@@ -18,7 +18,7 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
     const char* effect_path = obs_module_file("test.effect");
     user_data->effect_handler = gs_effect_create_from_file(effect_path, nullptr);
     if(user_data->effect_handler == nullptr) {
-        throw std::runtime_error("Effect could not be created");
+        throw std::runtime_error("gs_effect_create_from_file returned nullptr");
     }
     obs_leave_graphics();
 
@@ -30,8 +30,12 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
 static void censor_destroy(void* data) {
     auto* user_data = static_cast<effect_data*>(data);
     
-    gs_effect_destroy(user_data->effect_handler);
-    
+    // Destroy the effect and clean the user data
+    if(user_data->effect_handler != nullptr) {
+        obs_enter_graphics();
+        gs_effect_destroy(user_data->effect_handler);
+        obs_leave_graphics();
+    }
     delete user_data;
 }
 
@@ -44,18 +48,23 @@ static void censor_update(void *data, obs_data_t* settings) {
 }
 
 static obs_properties_t* censor_properties(void *data) {
-
+    auto* properties = obs_properties_create();
+    return properties;
 }
 
 static void censor_defaults(obs_data_t *settings) {
 
 }
 
-obs_source_info censor_effect = {
+static const char* censor_get_name(void* data) {
+    return "Ditector";
+}
+
+constexpr obs_source_info censor_effect = {
 	.id = "ditector_censor_effect",
 	.type = OBS_SOURCE_TYPE_FILTER,
 	.output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CAP_OBSOLETE,
-	.get_name = [](void*) { return "Ditector"; },
+	.get_name = censor_get_name,
 	.create = censor_create,
 	.destroy = censor_destroy,
 	.video_render = censor_render,
@@ -65,5 +74,5 @@ obs_source_info censor_effect = {
 };
 
 void register_effect() {
-
+    obs_register_source(&censor_effect);
 };
