@@ -4,9 +4,15 @@
 
 #include <obs/obs-module.h>
 
+constexpr char* ACTIVE_PROPERTY = "Active";
+
 struct effect_data {
     obs_source_t* source_handler;
     gs_effect_t* effect_handler;
+
+    bool is_active = false;
+
+    bool is_all_ok = true;
 };
 
 static void* censor_create(obs_data_t* settings, obs_source_t* context) {
@@ -40,15 +46,43 @@ static void censor_destroy(void* data) {
 }
 
 static void censor_render(void *data, gs_effect_t* effect) {
+    /// TODO: think about using passed effect instead of the one stored on user data
+
     auto* user_data = static_cast<effect_data*>(data);
+
+    // If the filter is not active, do nothing
+    if(!user_data->is_active) {
+        return;
+    }
+
+    // Start rendering
+    bool ok = obs_source_process_filter_begin(user_data->source_handler, 
+                                              GS_RGBA, 
+                                              OBS_ALLOW_DIRECT_RENDERING);
+    if(!ok) {
+        /// TODO: error popup or somethig
+        blog(LOG_ERROR, "ditector: error while starting rendering process");
+        return;
+    }
+
+    obs_source_process_filter_end(user_data->source_handler, 
+                                  user_data->effect_handler,
+                                  0, 0);
 }
 
 static void censor_update(void *data, obs_data_t* settings) { 
+    auto* user_data = static_cast<effect_data*>(data);
 
+    // Update the variables from the settings
+    user_data->is_active = obs_data_get_bool(settings, ACTIVE_PROPERTY);
 }
 
 static obs_properties_t* censor_properties(void *data) {
     auto* properties = obs_properties_create();
+
+    obs_properties_add_bool(properties, 
+                            ACTIVE_PROPERTY, 
+                            "True if the effect is active, false if not");
     return properties;
 }
 
