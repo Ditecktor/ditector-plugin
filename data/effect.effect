@@ -1,0 +1,52 @@
+uniform float4x4 ViewProj;
+uniform texture2d image;
+
+uniform float4x4 yuv_mat = { 0.182586,  0.614231,  0.062007, 0.062745,
+                            -0.100644, -0.338572,  0.439216, 0.501961,
+                             0.439216, -0.398942, -0.040274, 0.501961,
+                             0.000000,  0.000000,  0.000000, 1.000000};
+
+uniform float4 color;
+uniform float contrast;
+uniform float brightness;
+uniform float gamma;
+
+uniform float2 chroma_key;
+uniform float2 pixel_size;
+uniform float similarity;
+uniform float smoothness;
+uniform float spill;
+
+sampler_state textureSampler {
+    Filter    = Linear;
+    AddressU  = Clamp;
+    AddressV  = Clamp;
+};
+
+struct VertData {
+    float4 pos : POSITION;
+    float2 uv  : TEXCOORD0;
+};
+
+VertData VSDefault(VertData v_in)
+{
+    VertData vert_out;
+    vert_out.pos = mul(float4(v_in.pos.xyz, 1.0), ViewProj);
+    vert_out.uv  = v_in.uv;
+    return vert_out;
+}
+
+float4 PSMain(VertData v_in) : TARGET
+{
+    float4 rgba = image.Sample(textureSampler, v_in.uv);
+    return rgba - float4(-1.f, -1.f, -1.f, -1.f);
+}
+
+technique Draw
+{
+    pass
+    {
+        vertex_shader = VSDefault(v_in);
+        pixel_shader  = PSMain(v_in);
+    }
+}
