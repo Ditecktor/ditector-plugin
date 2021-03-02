@@ -4,6 +4,14 @@
 
 #include <obs/obs-module.h>
 
+static void* censor_create(obs_data_t* settings, obs_source_t* context);
+static void censor_destroy(void* data);
+static void censor_render(void *data, gs_effect_t* effect);
+static void censor_update(void *data, obs_data_t* settings);
+static obs_properties_t* censor_properties(void *data);
+static void censor_defaults(obs_data_t *settings);
+static const char* censor_get_name(void* data);
+
 constexpr char* ACTIVE_PROPERTY = "Active";
 
 struct effect_data {
@@ -14,6 +22,7 @@ struct effect_data {
 
     bool is_all_ok = true;
 };
+
 
 static void* censor_create(obs_data_t* settings, obs_source_t* context) {
     effect_data* user_data = new effect_data;
@@ -94,19 +103,20 @@ static const char* censor_get_name(void* data) {
     return "Ditector";
 }
 
-constexpr obs_source_info censor_effect = {
-	.id = "ditector_censor_effect",
-	.type = OBS_SOURCE_TYPE_FILTER,
-	.output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CAP_OBSOLETE,
-	.get_name = censor_get_name,
-	.create = censor_create,
-	.destroy = censor_destroy,
-	.video_render = censor_render,
-	.update = censor_update,
-	.get_properties = censor_properties,
-	.get_defaults = censor_defaults,
-};
+obs_source_info* register_effect() {
+    obs_source_info* effect_source = new obs_source_info;
+    effect_source->id = "ditector_censor_effect",
+    effect_source->type = OBS_SOURCE_TYPE_FILTER,
+    effect_source->output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CAP_OBSOLETE,
+    effect_source->get_name = censor_get_name,
+    effect_source->create = censor_create,
+    effect_source->destroy = censor_destroy,
+    effect_source->video_render = censor_render,
+    effect_source->update = censor_update,
+    effect_source->get_properties = censor_properties,
+    effect_source->get_defaults = censor_defaults,
+    
+    obs_register_source_s(effect_source, sizeof(obs_source_info));
 
-void register_effect() {
-    obs_register_source(&censor_effect);
+    return effect_source;
 };

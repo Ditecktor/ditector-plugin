@@ -1,3 +1,5 @@
 #pragma once
 
-void register_effect();
+#include <obs/obs-module.h>
+
+obs_source_info* register_effect();

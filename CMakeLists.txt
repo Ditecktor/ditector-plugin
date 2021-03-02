@@ -31,7 +31,8 @@ find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
 set(PLUGIN_SOURCES
-	src/main.cc)
+	src/main.cc
+    src/effect.cc)
 
 # --- Platform-independent build settings ---
 add_library(${CMAKE_PROJECT_NAME} MODULE ${PLUGIN_SOURCES} ${PLUGIN_HEADERS})

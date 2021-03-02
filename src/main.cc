@@ -24,23 +24,31 @@
 OBS_DECLARE_MODULE()
 OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
+obs_source_info* g_source_info;
 
+bool obs_module_load() {
 
-bool obs_module_load()
-{
     try {
-        register_effect();
+        g_source_info = register_effect();
     } catch (const std::exception& e) {
         blog(LOG_ERROR, "[DICK] error loading the effect: %s", e.what());
+
+        // Delete if source has been created
+        if(g_source_info != nullptr)
+            delete g_source_info;
+
         return false;
     }
 
-    blog(LOG_INFO, "plugin loaded successfully (version %s)", PLUGIN_VERSION);
+    blog(LOG_INFO, "[ditector] plugin loaded successfully (version %s)", PLUGIN_VERSION);
 
     return true;
 }
 
-void obs_module_unload()
-{
-    blog(LOG_INFO, "plugin unloaded");
+void obs_module_unload() {
+    // Delete if source has been created
+    if(g_source_info != nullptr)
+        delete g_source_info;
+
+    blog(LOG_INFO, "[ditector] plugin unloaded");
 }
