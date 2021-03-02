@@ -31,7 +31,7 @@ bool obs_module_load() {
     try {
         g_source_info = register_effect();
     } catch (const std::exception& e) {
-        blog(LOG_ERROR, "[DICK] error loading the effect: %s", e.what());
+        blog(LOG_ERROR, "[ditector] error loading the effect: %s", e.what());
 
         // Delete if source has been created
         if(g_source_info != nullptr)

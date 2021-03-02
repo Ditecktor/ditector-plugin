@@ -107,7 +107,7 @@ obs_source_info* register_effect() {
     obs_source_info* effect_source = new obs_source_info;
     effect_source->id = "ditector_censor_effect",
     effect_source->type = OBS_SOURCE_TYPE_FILTER,
-    effect_source->output_flags = OBS_SOURCE_VIDEO | OBS_SOURCE_CAP_OBSOLETE,
+    effect_source->output_flags = OBS_SOURCE_VIDEO,
     effect_source->get_name = censor_get_name,
     effect_source->create = censor_create,
     effect_source->destroy = censor_destroy,
