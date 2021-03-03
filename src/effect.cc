@@ -28,6 +28,8 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
     effect_data* user_data = new effect_data;
     user_data->source_handler = context;
 
+    blog(LOG_INFO, "[ditector] created effect data");
+
     // Create the graphics context 
     obs_enter_graphics();
     
@@ -38,12 +40,14 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
         /// TODO: unload module or show error to user instead of breaking 
         ///       the entire instance of obs
     }
+
     user_data->effect_handler = gs_effect_create_from_file(effect_path, nullptr);
     if(user_data->effect_handler == nullptr) {
         throw std::runtime_error("gs_effect_create_from_file returned nullptr");
     }
     obs_leave_graphics();
 
+    blog(LOG_INFO, "[ditector] effect created succesfully");
     censor_update(user_data, settings);
 
     return user_data;
