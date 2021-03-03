@@ -30,7 +30,14 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
 
     // Create the graphics context 
     obs_enter_graphics();
+    
     const char* effect_path = obs_module_file("test.effect");
+    if(effect_path == nullptr) {
+        blog(LOG_ERROR, "[ditector] shader was not found in folder");
+
+        /// TODO: unload module or show error to user instead of breaking 
+        ///       the entire instance of obs
+    }
     user_data->effect_handler = gs_effect_create_from_file(effect_path, nullptr);
     if(user_data->effect_handler == nullptr) {
         throw std::runtime_error("gs_effect_create_from_file returned nullptr");
