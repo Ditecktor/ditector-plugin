@@ -25,6 +25,50 @@ struct effect_data {
 
 
 static void* censor_create(obs_data_t* settings, obs_source_t* context) {
+    const std::string shader = 
+            "uniform float4x4 ViewProj;\n"
+            "uniform texture2d image;\n"
+            "\n"
+            "uniform float4x4 yuv_mat = { 0.182586,  0.614231,  0.062007, 0.062745,\n"
+            "                            -0.100644, -0.338572,  0.439216, 0.501961,\n"
+            "                             0.439216, -0.398942, -0.040274, 0.501961,\n"
+            "                             0.000000,  0.000000,  0.000000, 1.000000};\n"
+            "\n"
+            "sampler_state textureSampler {\n"
+            "    Filter    = Linear;\n"
+            "    AddressU  = Clamp;\n"
+            "    AddressV  = Clamp;\n"
+            "};\n"
+            "\n"
+            "struct VertData {\n"
+            "    float4 pos : POSITION;\n"
+            "    float2 uv  : TEXCOORD0;\n"
+            "};\n"
+            "\n"
+            "VertData VSMain(VertData v_in)\n"
+            "{\n"
+            "    VertData vert_out;\n"
+            "    vert_out.pos = mul(float4(v_in.pos.xyz, 1.0), ViewProj);\n"
+            "    vert_out.uv  = v_in.uv;\n"
+            "    return vert_out;\n"
+            "}\n"
+            "\n"
+            "float4 PSMain(VertData v_in) : TARGET\n"
+            "{\n"
+            "    float4 rgba = image.Sample(textureSampler, v_in.uv);\n"
+            "    return rgba - float4(-1.f, -1.f, -1.f, -1.f);\n"
+            "}\n"
+            "\n"
+            "technique Draw\n"
+            "{\n"
+            "    pass\n"
+            "    {\n"
+            "        vertex_shader = VSMain(v_in);\n"
+            "        pixel_shader  = PSMain(v_in);\n"
+            "    }\n"
+            "\n";
+
+
     effect_data* user_data = new effect_data;
     user_data->source_handler = context;
 
@@ -41,7 +85,8 @@ static void* censor_create(obs_data_t* settings, obs_source_t* context) {
         ///       the entire instance of obs
     }
 
-    user_data->effect_handler = gs_effect_create_from_file(effect_path, nullptr);
+    char* error_message = nullptr;
+    user_data->effect_handler = gs_effect_create(shader.c_str(), nullptr, &error_message);
     if(user_data->effect_handler == nullptr) {
         throw std::runtime_error("gs_effect_create_from_file returned nullptr");
     }
