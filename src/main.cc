@@ -22,7 +22,6 @@
 #include "effect.hh"
 
 OBS_DECLARE_MODULE()
-OBS_MODULE_USE_DEFAULT_LOCALE(PLUGIN_NAME, "en-US")
 
 obs_source_info* g_source_info;
 

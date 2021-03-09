@@ -12,7 +12,7 @@ static obs_properties_t* censor_properties(void *data);
 static void censor_defaults(obs_data_t *settings);
 static const char* censor_get_name(void* data);
 
-constexpr char* ACTIVE_PROPERTY = "Active";
+const char* ACTIVE_PROPERTY = "Active";
 
 struct effect_data {
     obs_source_t* source_handler;
@@ -152,7 +152,7 @@ static obs_properties_t* censor_properties(void *data) {
 }
 
 static void censor_defaults(obs_data_t *settings) {
-
+    obs_data_set_default_bool(settings, ACTIVE_PROPERTY, false);
 }
 
 static const char* censor_get_name(void* data) {
