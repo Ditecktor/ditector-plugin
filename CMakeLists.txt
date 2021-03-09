@@ -30,6 +30,7 @@ endif()
 find_package(LibObs REQUIRED)
 find_package(Qt5 REQUIRED COMPONENTS Core Widgets)
 
+set_property(SOURCE src/effect.hh PROPERTY SKIP_AUTOGEN ON)
 set(PLUGIN_SOURCES
 	src/main.cc
     src/effect.cc)

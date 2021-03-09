@@ -161,16 +161,16 @@ static const char* censor_get_name(void* data) {
 
 obs_source_info* register_effect() {
     obs_source_info* effect_source = new obs_source_info;
-    effect_source->id = "ditector_censor_effect",
-    effect_source->type = OBS_SOURCE_TYPE_FILTER,
-    effect_source->output_flags = OBS_SOURCE_VIDEO,
-    effect_source->get_name = censor_get_name,
-    effect_source->create = censor_create,
-    effect_source->destroy = censor_destroy,
-    effect_source->video_render = censor_render,
-    effect_source->update = censor_update,
-    effect_source->get_properties = censor_properties,
-    effect_source->get_defaults = censor_defaults,
+    effect_source->id = "ditector_censor_effect";
+    effect_source->type = OBS_SOURCE_TYPE_FILTER;
+    effect_source->output_flags = OBS_SOURCE_VIDEO;
+    effect_source->get_name = censor_get_name;
+    effect_source->create = censor_create;
+    effect_source->destroy = censor_destroy;
+    effect_source->video_render = censor_render;
+    effect_source->update = censor_update;
+    effect_source->get_properties = censor_properties;
+    effect_source->get_defaults = censor_defaults;
     
     obs_register_source_s(effect_source, sizeof(obs_source_info));
 
